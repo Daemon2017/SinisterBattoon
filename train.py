@@ -4,6 +4,7 @@ import os
 import tensorflow as tf
 import scipy.misc
 from skimage.io import imread
+from sklearn.metrics import classification_report, confusion_matrix
 from keras.models import Model
 from keras.layers import Conv2D, MaxPooling2D, Input, concatenate, Conv2DTranspose, Dropout, BatchNormalization, add, \
     AveragePooling2D, UpSampling2D
@@ -14,7 +15,7 @@ from keras import backend as K
 from keras.utils.np_utils import to_categorical
 from mymodel import dice_coef, dice_coef_loss, build, matrix_width, matrix_height, classes, L_0, epochs_num
 
-size_of_batch = 4
+size_of_batch = 8
 
 start = 0
 end = size_of_batch
@@ -29,7 +30,6 @@ tbCallBack = TensorBoard(log_dir='./logs',
                          write_graph=True,
                          write_grads=True,
                          write_images=True)
-
 
 checkpoint = ModelCheckpoint("weights-{epoch:02d}-{val_loss:.2f}.h5",
                              monitor=dice_coef,
@@ -166,11 +166,22 @@ def train():
                         verbose=1,
                         initial_epoch=0,
                         callbacks=[checkpoint,
-                                   tbCallBack,
+                                   # tbCallBack,
                                    # WeightsSaver(model, 1000),
                                    TB(1)])
-    model.save('weights_batch.h5')
     print('Training ended!')
+    model.save('weights_batch.h5')
+    Y_pred = model.predict_generator(generator=batch_test_generator(),
+                                     steps=total_test / size_of_batch,
+                                     verbose=1)
+    y_pred = np.argmax(Y_pred,
+                       axis=1)
+    print('Confusion Matrix')
+    print(confusion_matrix(batch_test_generator().classes,
+                           y_pred))
+    print('Classification Report')
+    print(classification_report(batch_test_generator().classes,
+                                y_pred))
 
 
 if not os.path.exists('logs'):
