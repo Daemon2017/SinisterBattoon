@@ -1,16 +1,9 @@
-import numpy as np
-import os
-import scipy.misc
-
-from skimage.io import imread
-
-from keras.models import Model, Sequential
-from keras.layers import Conv2D, MaxPooling2D, Input, concatenate, Conv2DTranspose, Dropout, BatchNormalization, add, \
-    AveragePooling2D, UpSampling2D, Add, Dense, Flatten, SpatialDropout2D, Activation
-from keras.optimizers import Adam, Adadelta
-from keras.losses import binary_crossentropy, categorical_crossentropy
-from keras.callbacks import TensorBoard, ModelCheckpoint, Callback, LearningRateScheduler
 from keras import backend as K
+from keras.layers import Conv2D, Input, Conv2DTranspose, BatchNormalization, add, \
+    SpatialDropout2D, Activation
+from keras.losses import categorical_crossentropy
+from keras.models import Model
+from keras.optimizers import Adam
 
 K.set_image_dim_ordering('tf')
 

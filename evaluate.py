@@ -1,20 +1,11 @@
-import numpy as np
 import os
-import scipy.misc
+import numpy as np
 
-from skimage.io import imread
-from numpy import genfromtxt, savetxt
-from keras.models import Model
-from keras.layers import Conv2D, MaxPooling2D, Input, concatenate, Conv2DTranspose, Dropout, BatchNormalization, add, \
-    AveragePooling2D, UpSampling2D
-from keras.optimizers import Adam
-from keras.callbacks import TensorBoard, ModelCheckpoint, Callback, LearningRateScheduler
-from keras.backend import argmax
-from keras import backend as K
-from mymodel import dice_coef, dice_coef_loss, build, matrix_width, matrix_height
+from numpy import genfromtxt
+from mymodel import build, matrix_width, matrix_height
 
 
-def predict():
+def func_predict():
     print('Preparing prediction set...')
     files = os.listdir('./predict_input/')
     x_files_names = list(filter(lambda x: x.endswith('.csv'), files))
@@ -45,10 +36,9 @@ def predict():
 
 if not os.path.exists('predict_input'):
     os.makedirs('predict_input')
-
 if not os.path.exists('predict_output'):
     os.makedirs('predict_output')
 
 model = build()
 model.load_weights('weights_batch.h5')
-predict()
+func_predict()
