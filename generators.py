@@ -4,7 +4,7 @@ from keras.utils.np_utils import to_categorical
 from numpy import genfromtxt
 from mymodel import matrix_width, matrix_height, classes
 
-size_of_batch = 8
+size_of_batch = 4
 
 start = 0
 end = size_of_batch

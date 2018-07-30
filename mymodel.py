@@ -93,7 +93,7 @@ def build():
                   outputs=[output])
     model.compile(optimizer=Adam(lr=L_0),
                   loss=categorical_crossentropy,
-                  metrics=['accuracy', dice_coef])
+                  metrics=[dice_coef])
     print('Model is ready!')
     print(model.summary())
     return model
