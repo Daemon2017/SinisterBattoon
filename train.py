@@ -3,7 +3,7 @@ import os
 from keras import backend as K
 from keras.callbacks import TensorBoard, ModelCheckpoint
 from generators import batch_test_generator, batch_train_generator, size_of_batch
-from mymodel import dice_coef, build, epochs_num
+from mymodel import build, epochs_num
 
 K.set_image_dim_ordering('tf')
 
@@ -14,11 +14,11 @@ tbCallBack = TensorBoard(log_dir='./logs',
                          write_images=True)
 
 checkpoint = ModelCheckpoint("weights-{epoch:02d}-{val_loss:.2f}.h5",
-                             monitor=dice_coef,
+                             monitor='val_loss',
                              verbose=1,
                              save_best_only=True,
                              save_weights_only=False,
-                             mode='max',
+                             mode='min',
                              period=1)
 
 
