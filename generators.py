@@ -13,7 +13,9 @@ start_test = 0
 end_test = size_of_batch
 
 
-def batch_train_generator(start, end, total, x_train_files_names, y_train_files_names):
+def batch_train_generator(total, x_train_files_names, y_train_files_names):
+    global start, end
+
     batch_num = 0
 
     while True:
@@ -54,7 +56,9 @@ def batch_train_generator(start, end, total, x_train_files_names, y_train_files_
         yield x_train, y_train
 
 
-def batch_test_generator(start_test, end_test, total_test, x_test_files_names, y_test_files_names):
+def batch_test_generator(total_test, x_test_files_names, y_test_files_names):
+    global start_test, end_test
+
     batch_num = 0
 
     while True:

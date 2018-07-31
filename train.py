@@ -2,9 +2,8 @@ import os
 
 from keras import backend as K
 from keras.callbacks import TensorBoard, ModelCheckpoint
-from generators import batch_test_generator, batch_train_generator, start, start_test, end, end_test, size_of_batch
+from generators import batch_test_generator, batch_train_generator, size_of_batch
 from mymodel import dice_coef, build, epochs_num
-
 
 K.set_image_dim_ordering('tf')
 
@@ -17,7 +16,7 @@ tbCallBack = TensorBoard(log_dir='./logs',
 checkpoint = ModelCheckpoint("weights-{epoch:02d}-{val_loss:.2f}.h5",
                              monitor=dice_coef,
                              verbose=1,
-                             save_best_only=False,
+                             save_best_only=True,
                              save_weights_only=False,
                              mode='max',
                              period=1)
@@ -25,9 +24,8 @@ checkpoint = ModelCheckpoint("weights-{epoch:02d}-{val_loss:.2f}.h5",
 
 def func_train():
     print('Training...')
-    model.fit_generator(generator=batch_train_generator(start, end, total, x_train_files_names, y_train_files_names),
-                        validation_data=batch_test_generator(start_test, end_test, total_test, x_test_files_names,
-                                                             y_test_files_names),
+    model.fit_generator(generator=batch_train_generator(total, x_train_files_names, y_train_files_names),
+                        validation_data=batch_test_generator(total_test, x_test_files_names, y_test_files_names),
                         epochs=epochs_num,
                         steps_per_epoch=total / size_of_batch,
                         validation_steps=total_test / size_of_batch,
@@ -36,7 +34,6 @@ def func_train():
                         callbacks=[checkpoint,
                                    tbCallBack])
     print('Training ended!')
-    model.save('weights_batch.h5')
 
 
 if not os.path.exists('logs'):

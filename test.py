@@ -1,13 +1,13 @@
 import os
 
 from mymodel import build
-from generators import batch_test_generator, size_of_batch, start_test, end_test
+from generators import batch_test_generator, size_of_batch
 
 
 def func_test():
     print('Testing...')
     scores = model.evaluate_generator(
-        generator=batch_test_generator(start_test, end_test, total_test, x_test_files_names, y_test_files_names),
+        generator=batch_test_generator(total_test, x_test_files_names, y_test_files_names),
         steps=total_test / size_of_batch,
         verbose=1)
     print('Loss: %2.2f, Accuracy %2.2f%%, DICE: %2.2f' % (scores[0], scores[1] * 100, scores[2]))
