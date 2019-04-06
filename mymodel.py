@@ -11,9 +11,27 @@ L_0 = 0.0001
 
 matrix_width = 25
 matrix_height = 25
-classes = 51
+classes = 56
 
-epochs_num = 10
+epochs_num = 100
+
+
+def f1(y_true, y_pred):
+    def recall(y_true, y_pred):
+        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+        possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
+        recall = true_positives / (possible_positives + K.epsilon())
+        return recall
+
+    def precision(y_true, y_pred):
+        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+        predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
+        precision = true_positives / (predicted_positives + K.epsilon())
+        return precision
+
+    precision = precision(y_true, y_pred)
+    recall = recall(y_true, y_pred)
+    return 2 * ((precision * recall) / (precision + recall + K.epsilon()))
 
 
 def dice_coef(y_true, y_pred):
@@ -70,7 +88,7 @@ def deconv_block(input, size):
 
 def build():
     print('Building model...')
-    filters = 256
+    filters = 32
     inputs = Input(shape=(matrix_height, matrix_width, 1))
 
     block1_in = conv_block(inputs, filters)
@@ -93,7 +111,7 @@ def build():
                   outputs=[output])
     model.compile(optimizer=Adam(lr=L_0),
                   loss=categorical_crossentropy,
-                  metrics=['accuracy', dice_coef])
+                  metrics=[dice_coef, f1])
     print('Model is ready!')
     print(model.summary())
     return model
