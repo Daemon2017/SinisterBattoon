@@ -42,7 +42,7 @@ def dice_coef(y_true, y_pred):
 
 
 def dice_coef_loss(y_true, y_pred):
-    return -dice_coef(y_true, y_pred)
+    return 1-dice_coef(y_true, y_pred)
 
 
 def conv_block(input, size):
@@ -110,7 +110,7 @@ def build():
     model = Model(inputs=[inputs],
                   outputs=[output])
     model.compile(optimizer=Adam(lr=L_0),
-                  loss=categorical_crossentropy,
+                  loss=dice_coef_loss,
                   metrics=[dice_coef, f1])
     print('Model is ready!')
     print(model.summary())
