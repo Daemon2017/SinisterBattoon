@@ -41,10 +41,6 @@ def dice_coef(y_true, y_pred):
     return (2.0 * intersection + 1.0) / (K.sum(y_true_f) + K.sum(y_pred_f) + 1.0)
 
 
-def dice_coef_loss(y_true, y_pred):
-    return -dice_coef(y_true, y_pred)
-
-
 def conv_block(input, size):
     conv = Conv2D(size, (1, 1), padding='same')(input)
     conv = Activation("elu")(conv)
