@@ -10,7 +10,7 @@ def func_test():
         generator=batch_test_generator(total_test, x_test_files_names, y_test_files_names),
         steps=total_test / size_of_batch,
         verbose=1)
-    print('Loss: %2.2f, Accuracy %2.2f%%, DICE: %2.2f%%' % (scores[0], scores[1] * 100, scores[2]))
+    print('Loss: %2.2f, DICE %2.2f%%, F1: %2.2f%%' % (scores[0], scores[1] * 100, scores[2] * 100))
     print('Testing ended!')
 
 

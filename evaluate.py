@@ -1,6 +1,5 @@
 import os
 import numpy as np
-import csv
 
 from numpy import genfromtxt
 from mymodel import build, matrix_width, matrix_height
