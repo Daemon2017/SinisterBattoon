@@ -11,7 +11,7 @@ L_0 = 0.0001
 
 matrix_width = 25
 matrix_height = 25
-classes = 56
+classes = 54
 
 epochs_num = 100
 
