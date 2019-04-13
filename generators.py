@@ -12,6 +12,9 @@ end = size_of_batch
 start_test = 0
 end_test = size_of_batch
 
+start_predict = 0
+end_predict = size_of_batch
+
 
 def batch_train_generator(total, x_train_files_names, y_train_files_names):
     global start, end
@@ -96,3 +99,39 @@ def batch_test_generator(total_test, x_test_files_names, y_test_files_names):
             batch_num = 0
 
         yield x_test, y_test
+
+
+def batch_predict_generator(total_predict, x_predict_files_names):
+    global start_predict, end_predict
+
+    batch_num = 0
+
+    while True:
+        print('\n------------------------------')
+        print('Generating predict batch ' + str(batch_num))
+        x_predict = np.ndarray((size_of_batch, matrix_height, matrix_width, 1), dtype=np.float)
+
+        sample = 0
+        for j in range(start_predict, end_predict):
+            print('Preparing predict file: #' + str(sample) + ', input name: ' + str(
+                x_predict_files_names[j]))
+            x_matrix = genfromtxt('./predict_input/' + x_predict_files_names[j], delimiter=',')
+            x_predict[sample] = np.array([x_matrix]).reshape(matrix_height, matrix_width, 1)
+            sample += 1
+
+        x_predict = x_predict.astype('float32')
+        x_predict /= 6800.0
+
+        print('Start is ' + str(start_predict) + ', end is ' + str(end_predict))
+        start_predict += size_of_batch
+        end_predict += size_of_batch
+        if end_predict > total_predict:
+            start_predict = 0
+            end_predict = size_of_batch
+
+        print('Predict batch ' + str(batch_num) + ' generated!')
+        batch_num += 1
+        if batch_num == size_of_batch:
+            batch_num = 0
+
+        yield x_predict

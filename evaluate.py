@@ -3,6 +3,7 @@ import numpy as np
 
 from numpy import genfromtxt
 from mymodel import build, matrix_width, matrix_height
+from generators import batch_predict_generator, size_of_batch
 
 
 def func_predict():
@@ -25,7 +26,10 @@ def func_predict():
     x_predict = x_predict.astype('float32')
     x_predict /= 6800.0
 
-    predictions = model.predict_on_batch(x_predict)
+    predictions = model.predict_generator(
+        generator=batch_predict_generator(total_predict, x_predict_files_names),
+        steps=total_predict / size_of_batch,
+        verbose=1)
     i = 0
     for prediction in predictions:
         prediction = np.argmax(prediction, 2)
@@ -38,6 +42,11 @@ if not os.path.exists('predict_input'):
     os.makedirs('predict_input')
 if not os.path.exists('predict_output'):
     os.makedirs('predict_output')
+x_predict_files = os.listdir('./predict_input/')
+x_predict_files_names = list(filter(lambda x: x.endswith('.csv'), x_predict_files))
+x_predict_files_names = sorted(x_predict_files_names)
+x_predict_total = len(x_predict_files_names)
+total_predict = x_predict_total
 
 model = build()
 model.load_weights('weights_batch.h5')
