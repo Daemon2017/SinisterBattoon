@@ -30,12 +30,6 @@ def func_predict():
     i = 0
     for prediction in predictions:
         prediction = np.argmax(prediction, 2)
-        # shape = prediction.shape
-        # for r in range(0, shape[0]):
-        #     for c in range(0, shape[1]):
-        #         for compliance_row in compliance:
-        #             if compliance_row[1] == prediction[r, c]:
-        #                 prediction[r, c] = compliance_row[0]
         short_name = os.path.splitext(x_files_names[i])[0]
         np.savetxt('./predict_output/' + str(short_name) + '.csv', prediction, fmt="%s", delimiter=',')
         i += 1
@@ -45,12 +39,6 @@ if not os.path.exists('predict_input'):
     os.makedirs('predict_input')
 if not os.path.exists('predict_output'):
     os.makedirs('predict_output')
-
-compliance = []
-with open("compliance.csv") as csvfile:
-    reader = csv.reader(csvfile, quoting=csv.QUOTE_NONNUMERIC)
-    for row in reader:
-        compliance.append(row)
 
 model = build()
 model.load_weights('weights_batch.h5')
