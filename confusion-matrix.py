@@ -3,7 +3,7 @@ import os
 
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, classification_report
 
 
 def unite_arrays(directory):
@@ -24,10 +24,16 @@ def unite_arrays(directory):
     return array
 
 
+print("Построение списка верных ответов...")
 y_true = unite_arrays('./test_output/')
+print(y_true)
+print("Построение списка предсказанных ответов...")
 y_pred = unite_arrays('./predict_output/')
+print(y_pred)
 print("Построение матрицы спутанности...")
 confusion_matrix = confusion_matrix(y_true=y_true, y_pred=y_pred)
+print(confusion_matrix)
+print(classification_report(y_true, y_pred))
 
 print("Запись матрицы спутанности в файл...")
 plt.figure(figsize=(100, 100))
