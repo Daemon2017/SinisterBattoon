@@ -16,24 +16,6 @@ classes = 54
 epochs_num = 100
 
 
-def f1(y_true, y_pred):
-    def recall(y_true, y_pred):
-        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
-        possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
-        recall = true_positives / (possible_positives + K.epsilon())
-        return recall
-
-    def precision(y_true, y_pred):
-        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
-        predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
-        precision = true_positives / (predicted_positives + K.epsilon())
-        return precision
-
-    precision = precision(y_true, y_pred)
-    recall = recall(y_true, y_pred)
-    return 2 * ((precision * recall) / (precision + recall + K.epsilon()))
-
-
 def dice_coef(y_true, y_pred):
     y_true_f = K.flatten(y_true)
     y_pred_f = K.flatten(y_pred)
@@ -107,7 +89,7 @@ def build():
                   outputs=[output])
     model.compile(optimizer=Adam(lr=L_0),
                   loss=categorical_crossentropy,
-                  metrics=[dice_coef, f1])
+                  metrics=[dice_coef])
     print('Model is ready!')
     print(model.summary())
     return model
