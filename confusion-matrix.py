@@ -3,6 +3,7 @@ import os
 
 import matplotlib.pyplot as plt
 import seaborn as sns
+
 from sklearn.metrics import confusion_matrix, classification_report
 
 
@@ -30,6 +31,7 @@ print(y_true)
 print("Построение списка предсказанных ответов...")
 y_pred = unite_arrays('./predict_output/')
 print(y_pred)
+
 print("Построение матрицы спутанности...")
 confusion_matrix = confusion_matrix(y_true=y_true, y_pred=y_pred)
 print(confusion_matrix)
