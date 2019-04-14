@@ -4,7 +4,8 @@ import os
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import confusion_matrix
+from imblearn.metrics import classification_report_imbalanced
 
 
 def unite_arrays(directory):
@@ -35,7 +36,7 @@ print(y_pred)
 print("Построение матрицы спутанности...")
 confusion_matrix = confusion_matrix(y_true=y_true, y_pred=y_pred)
 print(confusion_matrix)
-print(classification_report(y_true, y_pred))
+print(classification_report_imbalanced(y_true, y_pred))
 
 print("Запись матрицы спутанности в файл...")
 plt.figure(figsize=(100, 100))
