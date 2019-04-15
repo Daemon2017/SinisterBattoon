@@ -7,8 +7,6 @@ from keras.optimizers import Adam
 
 K.set_image_dim_ordering('tf')
 
-L_0 = 0.0001
-
 matrix_width = 25
 matrix_height = 25
 classes = 54
@@ -47,8 +45,7 @@ def conv_block(input, size):
 
 
 def deconv_block(input, size):
-    conv = SpatialDropout2D(0.2)(input)
-    conv = Conv2DTranspose(size, (1, 1), padding='same')(conv)
+    conv = Conv2DTranspose(size, (1, 1), padding='same')(input)
     conv = Activation("elu")(conv)
     conv = Conv2DTranspose(size, (3, 3), padding='same')(conv)
     conv = Activation("elu")(conv)
@@ -66,7 +63,7 @@ def deconv_block(input, size):
 
 def build():
     print('Building model...')
-    filters = 32
+    filters = 16
     inputs = Input(shape=(matrix_height, matrix_width, 1))
 
     block1_in = conv_block(inputs, filters)
@@ -87,7 +84,7 @@ def build():
     output = Conv2DTranspose(classes, (1, 1), activation='softmax')(block1_out)
     model = Model(inputs=[inputs],
                   outputs=[output])
-    model.compile(optimizer=Adam(lr=L_0),
+    model.compile(optimizer=Adam(),
                   loss=categorical_crossentropy,
                   metrics=[dice_coef])
     print('Model is ready!')
