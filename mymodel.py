@@ -1,6 +1,6 @@
 from keras import backend as K
 from keras.layers import Conv2D, Input, Conv2DTranspose, BatchNormalization, add, \
-    SpatialDropout2D, Activation
+    Activation
 from keras.losses import categorical_crossentropy
 from keras.models import Model
 from keras.optimizers import Adam
@@ -11,7 +11,7 @@ matrix_width = 25
 matrix_height = 25
 classes = 54
 
-epochs_num = 100
+epochs_num = 10
 
 
 def dice_coef(y_true, y_pred):
@@ -63,7 +63,7 @@ def deconv_block(input, size):
 
 def build():
     print('Building model...')
-    filters = 16
+    filters = 8
     inputs = Input(shape=(matrix_height, matrix_width, 1))
 
     block1_in = conv_block(inputs, filters)
