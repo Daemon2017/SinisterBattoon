@@ -106,17 +106,17 @@ def build():
 
     block3_9out = deconv9_block(block3_addin, filters)
     block6_3out = deconv3_block(block3_addin, filters)
-    block5_3out = deconv3_block(concatenate([block5_3in, block6_3out]), filters)
-    block3_addout = concatenate([block5_3out, block3_9out])
+    block5_3out = deconv3_block(block6_3out, filters)
+    block3_addout = concatenate([block5_3out, block3_9out, block2_addin])
 
     block2_9out = deconv9_block(block3_addout, filters)
-    block4_3out = deconv3_block(concatenate([block4_3in, block3_addout]), filters)
-    block3_3out = deconv3_block(concatenate([block3_3in, block4_3out]), filters)
-    block2_addout = concatenate([block3_3out, block2_9out])
+    block4_3out = deconv3_block(block3_addout, filters)
+    block3_3out = deconv3_block(block4_3out, filters)
+    block2_addout = concatenate([block3_3out, block2_9out, block1_addin])
 
     block1_9out = deconv9_block(block2_addout, filters)
-    block2_3out = deconv3_block(concatenate([block2_3in, block2_addout]), filters)
-    block1_3out = deconv3_block(concatenate([block1_3in, block2_3out]), filters)
+    block2_3out = deconv3_block(block2_addout, filters)
+    block1_3out = deconv3_block(block2_3out, filters)
     block1_addout = concatenate([block1_3out, block1_9out])
 
     output = Conv2DTranspose(classes, (1, 1), activation='softmax')(block1_addout)
