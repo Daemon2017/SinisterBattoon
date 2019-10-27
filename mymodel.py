@@ -86,7 +86,7 @@ def deconv9_block(input, size):
 
 def build():
     print('Building model...')
-    filters = 8
+    filters = 32
     inputs = Input(shape=(matrix_height, matrix_width, 1))
 
     block1_9in = conv9_block(inputs, filters)

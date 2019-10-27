@@ -9,7 +9,6 @@ total_number_of_files = len(files_names)
 
 total_number_of_values = 0
 total_number_of_zero_values = 0
-total_number_of_one_values = 0
 for file in os.listdir(directory):
     print("Чтение файла " + file + "...")
     with open(directory + file) as csvfile:
@@ -19,11 +18,7 @@ for file in os.listdir(directory):
                 total_number_of_values += 1
                 if column == 0:
                     total_number_of_zero_values += 1
-                if column == 1:
-                    total_number_of_one_values += 1
 print("Всего значений: " + str(total_number_of_values))
 print("Всего нулевых значений: " + str(total_number_of_zero_values))
-print("Всего единичных значений: " + str(total_number_of_one_values))
-print("Нулевые и единичные значения составляют " + str(
-    100 * (total_number_of_zero_values + total_number_of_one_values) / total_number_of_values) +
-      "% от всех значений")
+print("Нулевые значения составляют " + str(
+    100 - (100 * (total_number_of_zero_values) / total_number_of_values)) + "% от всех значений")
