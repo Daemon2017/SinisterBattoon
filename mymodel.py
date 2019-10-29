@@ -9,7 +9,7 @@ K.set_image_dim_ordering('tf')
 
 matrix_width = 25
 matrix_height = 25
-classes = 54
+classes = 90
 
 epochs_num = 10
 

@@ -21,4 +21,4 @@ for file in os.listdir(directory):
 print("Всего значений: " + str(total_number_of_values))
 print("Всего нулевых значений: " + str(total_number_of_zero_values))
 print("Нулевые значения составляют " + str(
-    100 - (100 * (total_number_of_zero_values) / total_number_of_values)) + "% от всех значений")
+    100 - (100 * total_number_of_zero_values / total_number_of_values)) + "% от всех значений")
