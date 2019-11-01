@@ -1,9 +1,9 @@
 from keras import backend as K
-from keras.layers import Conv2D, Input, Conv2DTranspose, BatchNormalization, add, \
-    Activation, concatenate
-from keras.losses import categorical_crossentropy
+from keras.layers import Conv2D, Input, Conv2DTranspose, BatchNormalization, Activation, concatenate
 from keras.models import Model
 from keras.optimizers import Adam
+from segmentation_models.losses import cce_dice_loss
+from segmentation_models.metrics import f1_score
 
 K.set_image_dim_ordering('tf')
 
@@ -12,13 +12,6 @@ matrix_height = 25
 classes = 90
 
 epochs_num = 10
-
-
-def dice_coef(y_true, y_pred):
-    y_true_f = K.flatten(y_true)
-    y_pred_f = K.flatten(y_pred)
-    intersection = K.sum(y_true_f * y_pred_f)
-    return (2.0 * intersection + 1.0) / (K.sum(y_true_f) + K.sum(y_pred_f) + 1.0)
 
 
 def conv3_block(input, size):
@@ -123,8 +116,8 @@ def build():
     model = Model(inputs=[inputs],
                   outputs=[output])
     model.compile(optimizer=Adam(),
-                  loss=categorical_crossentropy,
-                  metrics=[dice_coef])
+                  loss=cce_dice_loss,
+                  metrics=[f1_score])
     print('Model is ready!')
     print(model.summary())
     return model
