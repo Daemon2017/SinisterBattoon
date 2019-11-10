@@ -1,5 +1,5 @@
 from keras import backend as K
-from keras.layers import Conv2D, Input, Conv2DTranspose, BatchNormalization, Activation, concatenate
+from keras.layers import Conv2D, Input, Conv2DTranspose, BatchNormalization, add, Activation
 from keras.models import Model
 from keras.optimizers import Adam
 from segmentation_models.losses import cce_dice_loss
@@ -14,7 +14,7 @@ classes = 90
 epochs_num = 10
 
 
-def conv3_block(input, size):
+def conv_block(input, size):
     conv = Conv2D(size, (1, 1), padding='same')(input)
     conv = Activation("elu")(conv)
     conv = BatchNormalization(axis=3)(conv)
@@ -37,20 +37,7 @@ def conv3_block(input, size):
     return conv
 
 
-def conv9_block(input, size):
-    conv = Conv2D(size, (1, 1), padding='same')(input)
-    conv = Activation("elu")(conv)
-    conv = BatchNormalization(axis=3)(conv)
-    conv = Conv2D(size, (9, 9), padding='same')(conv)
-    conv = Activation("elu")(conv)
-    conv = BatchNormalization(axis=3)(conv)
-    conv = Conv2D(size * 4, (1, 1), padding='same')(conv)
-    conv = Activation("elu")(conv)
-    conv = BatchNormalization(axis=3)(conv)
-    return conv
-
-
-def deconv3_block(input, size):
+def deconv_block(input, size):
     conv = Conv2DTranspose(size, (1, 1), padding='same')(input)
     conv = Activation("elu")(conv)
     conv = Conv2DTranspose(size, (3, 3), padding='same')(conv)
@@ -67,52 +54,27 @@ def deconv3_block(input, size):
     return conv
 
 
-def deconv9_block(input, size):
-    conv = Conv2DTranspose(size, (1, 1), padding='same')(input)
-    conv = Activation("elu")(conv)
-    conv = Conv2DTranspose(size, (9, 9), padding='same')(conv)
-    conv = Activation("elu")(conv)
-    conv = Conv2DTranspose(size * 4, (1, 1), padding='same')(conv)
-    conv = Activation("elu")(conv)
-    return conv
-
-
 def build():
     print('Building model...')
-    filters = 32
+    filters = 8
     inputs = Input(shape=(matrix_height, matrix_width, 1))
 
-    block1_9in = conv9_block(inputs, filters)
-    block1_3in = conv3_block(inputs, filters)
-    block2_3in = conv3_block(block1_3in, filters)
-    block1_addin = concatenate([block2_3in, block1_9in])
+    block1_in = conv_block(inputs, filters)
+    block2_in = conv_block(block1_in, filters)
+    block3_in = conv_block(block2_in, filters)
+    block4_in = conv_block(block3_in, filters)
+    block5_in = conv_block(block4_in, filters)
 
-    block2_9in = conv9_block(block1_addin, filters)
-    block3_3in = conv3_block(block1_addin, filters)
-    block4_3in = conv3_block(block3_3in, filters)
-    block2_addin = concatenate([block4_3in, block2_9in])
+    block6_in = conv_block(block5_in, filters)
+    block6_out = deconv_block(block6_in, filters)
 
-    block3_9in = conv9_block(block2_addin, filters)
-    block5_3in = conv3_block(block2_addin, filters)
-    block6_3in = conv3_block(block5_3in, filters)
-    block3_addin = concatenate([block6_3in, block3_9in])
+    block5_out = deconv_block(add([block5_in, block6_out]), filters)
+    block4_out = deconv_block(add([block4_in, block5_out]), filters)
+    block3_out = deconv_block(add([block3_in, block4_out]), filters)
+    block2_out = deconv_block(add([block2_in, block3_out]), filters)
+    block1_out = deconv_block(add([block1_in, block2_out]), filters)
 
-    block3_9out = deconv9_block(block3_addin, filters)
-    block6_3out = deconv3_block(block3_addin, filters)
-    block5_3out = deconv3_block(block6_3out, filters)
-    block3_addout = concatenate([block5_3out, block3_9out, block2_addin])
-
-    block2_9out = deconv9_block(block3_addout, filters)
-    block4_3out = deconv3_block(block3_addout, filters)
-    block3_3out = deconv3_block(block4_3out, filters)
-    block2_addout = concatenate([block3_3out, block2_9out, block1_addin])
-
-    block1_9out = deconv9_block(block2_addout, filters)
-    block2_3out = deconv3_block(block2_addout, filters)
-    block1_3out = deconv3_block(block2_3out, filters)
-    block1_addout = concatenate([block1_3out, block1_9out])
-
-    output = Conv2DTranspose(classes, (1, 1), activation='softmax')(block1_addout)
+    output = Conv2DTranspose(classes, (1, 1), activation='softmax')(block1_out)
     model = Model(inputs=[inputs],
                   outputs=[output])
     model.compile(optimizer=Adam(),
