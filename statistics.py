@@ -2,10 +2,6 @@ import csv
 import os
 
 directory = './train_output/'
-files = os.listdir(directory)
-
-files_names = sorted(list(filter(lambda x: x.endswith('.csv'), files)))
-total_number_of_files = len(files_names)
 
 total_number_of_values = 0
 total_number_of_zero_values = 0
